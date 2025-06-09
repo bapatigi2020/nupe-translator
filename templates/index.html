@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>English to Nupe Translator</title>
+    <style>
+        body { font-family: Arial; background: #f2f2f2; padding: 50px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
+        input[type="submit"] { padding: 10px 20px; }
+        .translation { margin-top: 20px; font-size: 18px; color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>English to Nupe Translator</h2>
+        <form method="post">
+            <label for="english_text">Enter English Sentence:</label>
+            <input type="text" id="english_text" name="english_text" required>
+            <input type="submit" value="Translate">
+        </form>
+        {% if translation %}
+        <div class="translation">
+            <strong>Nupe Translation:</strong> {{ translation }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
