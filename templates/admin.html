@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dictionary Admin</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --text: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px;
+        }
+
+        h2, h3 {
+            margin-top: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .actions a {
+            text-decoration: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: var(--danger);
+            font-size: 12px;
+        }
+
+        .search {
+            margin-bottom: 15px;
+        }
+    </style>
+
+    <script>
+        function filterTable() {
+            const filter = document.getElementById("search").value.toLowerCase();
+            document.querySelectorAll(".data-row").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(filter)
+                    ? ""
+                    : "none";
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>📘 Dictionary Admin Panel</h2>
+
+    <!-- SEARCH -->
+    <div class="card">
+        <input type="text" id="search" class="search"
+               onkeyup="filterTable()"
+               placeholder="🔍 Search English or Nupe...">
+    </div>
+
+    <!-- ADD ENTRY -->
+    <div class="card">
+        <h3>Add New Entry</h3>
+        <form method="post" action="/admin/add">
+            <input type="text" name="english" placeholder="English meanings (use |)" required>
+            <br><br>
+            <input type="text" name="nupe" placeholder="Nupe" required>
+            <br><br>
+            <button class="btn-primary">➕ Add Entry</button>
+        </form>
+    </div>
+
+    <!-- IMPORT / EXPORT -->
+    <div class="card">
+        <h3>Import / Export</h3>
+
+        <div class="flex">
+            <form method="post" action="/admin/import" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".csv" required>
+                <br><br>
+                <button class="btn-secondary">📥 Import CSV</button>
+            </form>
+
+            <a href="/admin/export">
+                <button class="btn-secondary">📤 Export CSV</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+        <h3>Existing Entries</h3>
+
+        <table>
+            <tr>
+                <th>#</th>
+                <th>English</th>
+                <th>Nupe</th>
+                <th>Action</th>
+            </tr>
+
+            {% for row in dictionary %}
+            <tr class="data-row">
+                <td>{{ loop.index0 }}</td>
+                <td>{{ " | ".join(row.english) }}</td>
+                <td>{{ row.nupe }}</td>
+                <td class="actions">
+                    <a href="/admin/delete/{{ loop.index0 }}"
+                       onclick="return confirm('Delete this entry?')">
+                        ❌ Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

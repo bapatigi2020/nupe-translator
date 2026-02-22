@@ -1,28 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>English to Nupe Translator</title>
+    <meta charset="UTF-8">
+    <title>English ⇄ Nupe Translator</title>
     <style>
-        body { font-family: Arial; background: #f2f2f2; padding: 50px; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0; }
-        input[type="submit"] { padding: 10px 20px; }
-        .translation { margin-top: 20px; font-size: 18px; color: green; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        select, input[type="text"], input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #2196f3;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #1976d2;
+        }
+        .translation {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: green;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .icon-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #eee;
+            cursor: pointer;
+        }
+        .icon-btn:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>English to Nupe Translator</h2>
-        <form method="post">
-            <label for="english_text">Enter English Sentence:</label>
-            <input type="text" id="english_text" name="english_text" required>
+        <h2>English ⇄ Nupe Translator</h2>
+        <form method="post" onsubmit="return validateInput()">
+            <label for="direction">Translation Direction:</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <select name="direction" id="direction">
+                    <option value="en_to_nupe">English to Nupe</option>
+                    <option value="nupe_to_en">Nupe to English</option>
+                </select>
+                <button type="button" class="icon-btn" onclick="swapDirection()">↔️</button>
+            </div>
+
+            <label for="text_input">Enter Text:</label>
+            <input type="text" name="text_input" id="text_input" placeholder="Type here..." required>
+
             <input type="submit" value="Translate">
         </form>
+
         {% if translation %}
-        <div class="translation">
-            <strong>Nupe Translation:</strong> {{ translation }}
+        <div class="translation" id="translatedText">
+            <p><strong>Translation:</strong> {{ translation }}</p>
+        </div>
+        <div class="btn-group">
+            <button class="icon-btn" onclick="copyToClipboard()">📋 Copy</button>
+            <button class="icon-btn" onclick="speakText()">🔊 Speak</button>
         </div>
         {% endif %}
     </div>
+
+    <script>
+        function validateInput() {
+            const input = document.getElementById('text_input').value.trim();
+            if (input.length < 2) {
+                alert("Please enter more than one character.");
+                return false;
+            }
+            return true;
+        }
+
+        function swapDirection() {
+            const select = document.getElementById('direction');
+            if (select.value === "en_to_nupe") {
+                select.value = "nupe_to_en";
+            } else {
+                select.value = "en_to_nupe";
+            }
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById("translatedText").innerText.replace("Translation:", "").trim();
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied to clipboard!");
+            }, () => {
+                alert("Failed to copy.");
+            });
+        }
+
+        function speakText() {
+            const text = document.getElementById("translatedText").innerText.replace("Translation:", "").trim();
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        }
+    </script>
 </body>
 </html>
