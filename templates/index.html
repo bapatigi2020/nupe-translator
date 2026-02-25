@@ -7,11 +7,13 @@
 
   <style>
     :root{
-      --bg-url: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb");
+      --bg-url: url("/static/images.png"); /* default */
     }
 
+    *{ box-sizing:border-box; }
+
     body{
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
       margin: 0;
       padding: 0;
       min-height: 100vh;
@@ -22,70 +24,43 @@
       overflow: hidden;
       color: #fff;
 
-      /* Default background image (swapped by JS using --bg-url) */
+      /* background only (no animated layer) */
       background: var(--bg-url) no-repeat center center / cover;
-      transition: background-image 900ms ease-in-out;
+      transition: background-image 500ms ease-in-out;
     }
 
-    /* Dark blur overlay */
+    /* Dark overlay (no blur -> faster on phones) */
     body::before{
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(5px);
+      background: rgba(0,0,0,0.58);
       z-index: 0;
-    }
-
-    /* Animated cultural layer (only visible when .bg-animated is on body) */
-    body::after{
-      content: "";
-      position: absolute;
-      inset: -40%;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 700ms ease;
-      pointer-events: none;
-
-      background:
-        radial-gradient(circle at 20% 30%, rgba(0,255,204,0.25), transparent 45%),
-        radial-gradient(circle at 80% 20%, rgba(33,150,243,0.25), transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(255,193,7,0.18), transparent 45%),
-        linear-gradient(120deg, rgba(0,0,0,0.6), rgba(0,0,0,0.25)),
-        linear-gradient(120deg, #0b3d2e, #0b2b5c, #4a0b5c, #5c2b0b);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 300% 300%;
-      animation: culturalShift 18s ease-in-out infinite;
-      filter: saturate(120%);
-    }
-
-    body.bg-animated::after{
-      opacity: 1;
-    }
-
-    @keyframes culturalShift{
-      0%   { transform: translate(0,0) rotate(0deg); background-position: 0% 50%; }
-      50%  { transform: translate(-2%, -2%) rotate(3deg); background-position: 100% 50%; }
-      100% { transform: translate(0,0) rotate(0deg); background-position: 0% 50%; }
     }
 
     .container{
       position: relative;
       z-index: 1;
-      width: min(92vw, 550px);
-      padding: 32px 22px;
+
+      /* responsive width for all phones */
+      width: min(92vw, 560px);
+      margin: 16px;
+
+      padding: 22px 16px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+
+      /* lightweight glass (no heavy blur) */
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
     }
 
     h2{
       text-align: center;
-      margin: 0 0 18px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      font-size: clamp(20px, 3.8vw, 28px);
+      margin: 0 0 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: clamp(18px, 4.6vw, 28px);
     }
 
     label{
@@ -93,35 +68,7 @@
       margin-bottom: 6px;
       font-weight: 600;
       opacity: 0.95;
-    }
-
-    select, input[type="text"]{
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0 16px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      background: rgba(255,255,255,0.88);
-      outline: none;
-      box-sizing: border-box;
-    }
-
-    input[type="submit"]{
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      background: linear-gradient(135deg, #2196f3, #00bcd4);
-      color: white;
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    input[type="submit"]:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      font-size: 14px;
     }
 
     .direction-row{
@@ -130,25 +77,66 @@
       gap: 10px;
     }
 
-    .icon-btn{
-      padding: 10px 14px;
-      border-radius: 10px;
+    select, textarea{
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0 14px;
+      border-radius: 12px;
       border: none;
-      background: rgba(255,255,255,0.9);
-      cursor: pointer;
-      transition: transform .15s ease, background .15s ease;
-      white-space: nowrap;
+      font-size: 16px;
+      background: rgba(255,255,255,0.92);
+      outline: none;
+      color: #111;
     }
 
-    .icon-btn:hover{
-      transform: scale(1.05);
-      background: #fff;
+    textarea{
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    input[type="submit"]{
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2196f3, #00bcd4);
+      color: white;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+      will-change: transform;
+      touch-action: manipulation;
+    }
+
+    input[type="submit"]:active{
+      transform: translateY(1px);
+    }
+
+    input[type="submit"]:hover{
+      box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+    }
+
+    .icon-btn{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.92);
+      cursor: pointer;
+      transition: transform .12s ease, background .12s ease;
+      white-space: nowrap;
+      touch-action: manipulation;
+    }
+
+    .icon-btn:active{
+      transform: scale(0.98);
     }
 
     .translation{
-      margin-top: 16px;
-      font-size: 17px;
-      font-weight: 700;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 800;
       text-align: center;
       color: #00ffcc;
       word-wrap: break-word;
@@ -162,9 +150,16 @@
       flex-wrap: wrap;
     }
 
-    @media (max-width: 420px){
-      .container{ padding: 26px 16px; }
-      select, input[type="text"]{ font-size: 15px; }
+    /* very small phones */
+    @media (max-width: 360px){
+      .container{ padding: 18px 12px; }
+      select, textarea{ font-size: 15px; }
+    }
+
+    /* reduce motion for users who prefer it (also helps low-end phones) */
+    @media (prefers-reduced-motion: reduce){
+      body{ transition: none; }
+      input[type="submit"], .icon-btn{ transition: none; }
     }
   </style>
 </head>
@@ -185,13 +180,11 @@
       </div>
 
       <label for="text_input">Enter Text:</label>
-      <!-- changed to textarea so it can accept long text/sentences -->
       <textarea
         name="text_input"
         id="text_input"
         placeholder="Type here..."
         required
-        style="width:100%; padding:12px; min-height:90px; border-radius:10px; border:none; font-size:16px; background:rgba(255,255,255,0.88); box-sizing:border-box; resize:vertical;"
       ></textarea>
 
       <input type="submit" value="Translate" />
@@ -210,46 +203,28 @@
   </div>
 
   <script>
-    // --- BACKGROUND ROTATOR (every 60 seconds) ---
+    // ✅ 2 image backgrounds only (no animated background)
+    // Put these files inside your Flask static folder:
+    //   /static/images.png
+    //   /static/nupe-people.jpg
     const backgrounds = [
-      {
-        type: "image",
-        url: 'url("https://images.unsplash.com/photo-1506744038136-46273834b3fb")',
-        animated: false
-      },
-      {
-        type: "animated",
-        animated: true
-      },
-      {
-        type: "image",
-        // Put the Pinterest image into /static and rename it:
-        // static/nupe-people.jpg
-        url: 'url("/static/nupe-people.jpg")',
-        animated: false
-      }
+      'url("/static/images.png")',
+      'url("/static/nupe-people.jpg")'
     ];
 
     let bgIndex = 0;
 
     function applyBackground(i){
-      const bg = backgrounds[i];
-
-      // toggle animated layer
-      document.body.classList.toggle("bg-animated", !!bg.animated);
-
-      // set base image if provided
-      if (bg.type === "image" && bg.url){
-        document.documentElement.style.setProperty("--bg-url", bg.url);
-      }
+      document.documentElement.style.setProperty("--bg-url", backgrounds[i]);
     }
 
     applyBackground(bgIndex);
 
+    // ✅ change every 30 seconds as requested
     setInterval(() => {
       bgIndex = (bgIndex + 1) % backgrounds.length;
       applyBackground(bgIndex);
-    }, 60000);
+    }, 20000);
 
     // --- FORM + ACTION BUTTONS ---
     function validateInput() {
@@ -284,6 +259,7 @@
 
       const text = el.innerText.replace("Translation:", "").trim();
       const utterance = new SpeechSynthesisUtterance(text);
+      speechSynthesis.cancel(); // stop previous speech (prevents overlap)
       speechSynthesis.speak(utterance);
     }
   </script>
